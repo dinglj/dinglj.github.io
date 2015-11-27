@@ -25,7 +25,7 @@ blog:
     description: 走上一生只为拥抱你                      # 博客描述
     title: dinglj                                         # 网页标题
     url: http://dinglj.github.io/                         # 博客地址
-    duoshuo:                                        # 多说ID       <---
+    duoshuo: dinglj                                        # 多说ID       <---
     tongji:                                         # 百度统计ID   <---
     clickiTongJi: 					               # Clicki统计ID <---
     qiniu:                                               # 七牛云地址
