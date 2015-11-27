@@ -2,10 +2,10 @@
 name: Github
 icon: fa fa-github-alt
 members:
-  - name: Comtu
+  - name: dinglj
     notnewblank: false
-    link: http://github.com/comtu
+    link: http://github.com/dinglj
 
-  - name: ComtuBlog
+  - name: dingljBlog
     notnewblank: true
-    link: http://comtu.github.io/
+    link: http://dinglj.github.io/
