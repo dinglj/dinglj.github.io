@@ -12,7 +12,7 @@ shTheme: shThemeEclipse # shThemeDefault  shThemeDjango  shThemeEclipse  shTheme
 #mybatis 笔记
 
 ---
-###mapper xml 字符串比较
+### mapper xml 字符串比较 ###
 >错误写法：if test="status == 'Y'"  
 结果：抛异常NumberFormatException异常！提示内容非常少，看不出问题在哪里！  
 正确写法：if test='status == "y"'  
@@ -21,4 +21,3 @@ shTheme: shThemeEclipse # shThemeDefault  shThemeDjango  shThemeEclipse  shTheme
 记录下来，供人家参考！
 ---
 
-#mybatis
