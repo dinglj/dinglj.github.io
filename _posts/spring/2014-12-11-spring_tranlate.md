@@ -1,3 +1,12 @@
+---
+layout : post
+title : "hello spring"
+category : spring
+duoshuo: true
+date : 2015-12-11
+tags : [spring]
+---
+
 ###spring 翻译[ioc-依赖注入控制器]
 http://docs.spring.io/spring/docs/3.2.x/spring-framework-reference/htmlsingle/#overview-core-container
 1.2.1 核心容器
