@@ -102,15 +102,15 @@ Suspendisse id sem consectetuer libero luctus adipiscing.
 1986\. What a great season.
 
 * * *
-
+1
 ***
-
+2
 *****
-
+3
 - - -
-
+4
 ---------------------------------------
-
+5
 ---
 
 This is [an example](http://example.com/ "Title") inline link.
