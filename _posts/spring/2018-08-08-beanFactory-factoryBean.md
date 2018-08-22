@@ -15,6 +15,10 @@ tags : [spring,BeanFactory,FactoryBean]
 2. 定制实例化 复杂配置
 
 
+## spring 事务 ##
+1. private 方法, final 方法 和 static 方法不能添加事务
+
+
 
 
 
