@@ -1,0 +1,99 @@
+---
+layout : post
+title : "hadoop集群搭建"
+category : ELK
+duoshuo: true
+date : 2019-11-25
+tags : [hadoop]
+---
+
+### Hadoop 集群搭建 ###
+1. 集群环境准备
+    - 1.1 使用虚拟机工具创建三个服务器节点 命名 qiping lingling huanhuan
+    - 1.2 关闭防火墙
+    ````
+    service iptables status  -- 查看状态
+    service iptables stop  -- 停止
+    service iptables start -- 启动
+    service iptables restart  
+    chkconfig iptables off  
+    chkconfig iptables on　　
+    ````
+    - 1.3 设置host和hostname
+    ``
+    vi /etc/hosts
+    ``
+
+
+
+
+
+1. 安装JDK环境
+    - 1.1 到官网上下载JDK包，（目前版本 jdk-8u171-linux-x64.tar.gz）
+    - 1.2 cd /app
+    - 1.3 解压 tar -xzvf jdk-8u171-linux-x64.tar.gz (/app/jdk1.8.0_171)
+    - 1.4 配置环境变量 vi /etc/profile 添加以下配置 
+    ````
+            export JAVA_HOME=/app/jdk1.8.0_171
+            export PATH=$JAVA_HOME/bin:$PATH
+    ````
+2. 创建用户 （Elasticsearch 无法root启动）
+    - 2.1 useradd zhangfei
+    - 2.2 passwd zhangfei 输入密码
+    - 2.3 授权 vi /etc/passes 把用户组id设置和root一样的用户组
+    - 2.4 ZhangFei:x:500:0::/home/zhangfei:/bin/bash
+3. 安装Elasticsearch 服务
+    - 3.1 到官网上下载 （目前版本 elasticsearch-6.2.4.tar.gz）
+    - 3.2 解压 tar -xzvf elasticsearch-6.2.4.tar.gz
+    - 3.3 修改配置
+    ```
+            3.3.1 cd /app/elasticsearch-6.2.4/config
+            3.3.2 vi elasticsearch.yml 修改以下配置
+                path.data: /app/es/data --数据存放目录
+                path.logs: /app/es/logs --日志存放目录
+                network.host: 0.0.0.0 --设置非本机访问
+    ```
+    - 3.4 启动
+        3.4.1 cd bin/
+        3.4.2 ./bin/elasticsearch
+4. 安装Kibana
+    - 4.1 到官网上下载 （目前版本 kibana-6.2.4-linux-x86_64.tar.gz）
+    - 4.2 解压 tar -xzvf kibana-6.2.4-linux-x86_64.tar.gz
+    - 4.3 修改配置 cd /app/kibana-6.2.4-linux-x86_64/config
+    ```
+        4.3.1 vi kibana.yml  修改以下配置
+        4.3.2 server.host: "0.0.0.0" --设置非本机访问
+        4.3.3 elasticsearch.url: "http://localhost:9200" --设置elasticsearch服务地址
+    ```
+    - 3.4 启动 回到home ./bin/kibana
+5. 在日志端安装 Logstash
+    - 5.1 到官网下载 （目前版本 logstash-6.2.4.tar.gz）
+    - 5.2 到日志文件服务器 解压 tar -xzvf logstash-6.2.4.tar.gz
+    - 5.3 到home目录 vi logstash.conf --创建配置文件 添加附件配置
+    - 5.4 启动 nohup ./bin/logstash -f logstash.conf &
+6. Elasticsearch 索引管理
+    - 6.1 curl -X PUT "http://172.26.119.127:9200/beijing/"
+    - 6.2 curl -XDELETE "http://172.26.119.127:9200/beijing/"
+    - 6.2 curl 'localhost:9200/_cat/indices' --查看所有索引
+7. Kibana 使用
+
+8. 搭建过程 问题记录
+```
+    8.1 ERROR: [2] bootstrap checks failed
+       * [1]: max file descriptors [4096] for elasticsearch process is too low, increase to at least [65536]
+       * [2]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+```
+   --切换root用户 修改配置
+   - 8.1.1 su - root
+   - 8.1.2 vi vi /etc/security/limits.conf 添加如下
+```
+        * hard nofile 65536
+        * soft nofile 65536
+```
+   - 8.1.3 vi /etc/sysctl.conf 添加如下
+        vm.max_map_count=655360
+        sysctl -p --生效命令
+   - 参考文献 https://www.cnblogs.com/sloveling/p/elasticsearch.html
+
+
+```
