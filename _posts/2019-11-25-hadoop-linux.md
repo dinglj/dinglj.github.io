@@ -25,7 +25,6 @@ tags : [hadoop]
     192.168.56.110  qiping
     192.168.56.111  lingling
     192.168.56.112  huanhuan
-    
     scp /etc/hosts lingling:/etc/
     scp /etc/hosts huanhuan:/etc/
     ````
@@ -57,7 +56,6 @@ tags : [hadoop]
     ````
     mv zoo_sample.cfg zoo.cfg 
     vi zoo.cfg 
-    
     tickTime=2000
     initLimit=10
     syncLimit=5
@@ -246,7 +244,6 @@ tags : [hadoop]
       2638 JournalNode
       2814 NameNode
       2703 QuorumPeerMain
-      
       ````
       - 5.9.2 验证lingling
       ````
