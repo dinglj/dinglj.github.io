@@ -19,81 +19,255 @@ tags : [hadoop]
     chkconfig iptables off  
     chkconfig iptables on　　
     ````
-    - 1.3 设置host和hostname
-    ``
+    - 1.3 设置host和hostname （需重启）
+    ````
     vi /etc/hosts
-    ``
-
-
-
-
-
-1. 安装JDK环境
-    - 1.1 到官网上下载JDK包，（目前版本 jdk-8u171-linux-x64.tar.gz）
-    - 1.2 cd /app
-    - 1.3 解压 tar -xzvf jdk-8u171-linux-x64.tar.gz (/app/jdk1.8.0_171)
-    - 1.4 配置环境变量 vi /etc/profile 添加以下配置 
+    192.168.56.110  qiping
+    192.168.56.111  lingling
+    192.168.56.112  huanhuan
+    
+    scp /etc/hosts lingling:/etc/
+    scp /etc/hosts huanhuan:/etc/
+    
+    
     ````
-            export JAVA_HOME=/app/jdk1.8.0_171
-            export PATH=$JAVA_HOME/bin:$PATH
+    - 1.4 ssh 免密码登录 (各节点)
     ````
-2. 创建用户 （Elasticsearch 无法root启动）
-    - 2.1 useradd zhangfei
-    - 2.2 passwd zhangfei 输入密码
-    - 2.3 授权 vi /etc/passes 把用户组id设置和root一样的用户组
-    - 2.4 ZhangFei:x:500:0::/home/zhangfei:/bin/bash
-3. 安装Elasticsearch 服务
-    - 3.1 到官网上下载 （目前版本 elasticsearch-6.2.4.tar.gz）
-    - 3.2 解压 tar -xzvf elasticsearch-6.2.4.tar.gz
-    - 3.3 修改配置
-    ```
-            3.3.1 cd /app/elasticsearch-6.2.4/config
-            3.3.2 vi elasticsearch.yml 修改以下配置
-                path.data: /app/es/data --数据存放目录
-                path.logs: /app/es/logs --日志存放目录
-                network.host: 0.0.0.0 --设置非本机访问
-    ```
-    - 3.4 启动
-        3.4.1 cd bin/
-        3.4.2 ./bin/elasticsearch
-4. 安装Kibana
-    - 4.1 到官网上下载 （目前版本 kibana-6.2.4-linux-x86_64.tar.gz）
-    - 4.2 解压 tar -xzvf kibana-6.2.4-linux-x86_64.tar.gz
-    - 4.3 修改配置 cd /app/kibana-6.2.4-linux-x86_64/config
-    ```
-        4.3.1 vi kibana.yml  修改以下配置
-        4.3.2 server.host: "0.0.0.0" --设置非本机访问
-        4.3.3 elasticsearch.url: "http://localhost:9200" --设置elasticsearch服务地址
-    ```
-    - 3.4 启动 回到home ./bin/kibana
-5. 在日志端安装 Logstash
-    - 5.1 到官网下载 （目前版本 logstash-6.2.4.tar.gz）
-    - 5.2 到日志文件服务器 解压 tar -xzvf logstash-6.2.4.tar.gz
-    - 5.3 到home目录 vi logstash.conf --创建配置文件 添加附件配置
-    - 5.4 启动 nohup ./bin/logstash -f logstash.conf &
-6. Elasticsearch 索引管理
-    - 6.1 curl -X PUT "http://172.26.119.127:9200/beijing/"
-    - 6.2 curl -XDELETE "http://172.26.119.127:9200/beijing/"
-    - 6.2 curl 'localhost:9200/_cat/indices' --查看所有索引
-7. Kibana 使用
+    ssh-keygen -t rsa
+    ssh-copy-id root@qiping
+    ssh-copy-id root@lingling
+    ssh-copy-id root@huanhuan
+    
+    ````
+    
+2. 安装JDK 设置环境变量
+    - 3.1 下载解压
+    - 3.2 vi /etc/profile -- 环境变量 包含Zookeeper Hadoop
+    ````
+    export JAVA_HOME=/usr/local/app/jdk1.8.0_231
+    export ZOOKEEPER_HOME=/usr/local/app/apache-zookeeper-3.5.6-bin
+    export HADOOP_HOME=/usr/local/app/hadoop-3.2.1
+    export PATH=$JAVA_HOME/bin:$ZOOKEEPER_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PATH
+    ````
+    - 3.3 可以直接拷贝到其他节点 
+    ````
+    scp /etc/profile lingling:/etc/
+    scp /etc/profile huanhuan:/etc/
+    ````
+3. 安装Zookeeper
+    - 3.1 下载 apache-zookeeper-3.5.6-bin.tar.gz 解压
+    - 3.2
+    ````
+    mv zoo_sample.cfg zoo.cfg 
+    vi zoo.cfg 
+    
+    tickTime=2000
+    initLimit=10
+    syncLimit=5
+    dataDir=/usr/local/app/apache-zookeeper-3.5.6-bin/data
+    dataLogDir=/usr/local/app/apache-zookeeper-3.5.6-bin/dataLog
+    clientPort=2181
+    server.1=qiping:2888:3888
+    server.2=lingling:2888:3888
+    server.3=huanhuan:2888:3888
+    ````
+    - 3.3 启动
+    ````
+    zkServer.sh start
+    ````
+    
+4. 安装Hadoop
+    - 4.1 下载 hadoop-3.2.1.tar.gz 解压
+    - 4.2 修改配置文件
+      - 4.2.1 修改 {HADOOP_HOME}/etc/hadoop/core-site.xml 添加如下
+      ````
+      <configuration>
+      <property>
+          <name>hadoop.tmp.dir</name>
+          <value>/usr/local/app/hadoop-3.2.1/tmp</value>
+      </property>
+      <property>
+            <name>fs.defaultFS</name>
+            <value>hdfs://ns</value>
+       </property>
+      <property>
+            <name>ha.zookeeper.quorum</name>
+            <value>qiping:2181,lingling:2181,lingling:2181</value>
+      </property>
+      </configuration>
+      ````
+      - 4.2.2 修改 {HADOOP_HOME}/etc/hadoop/hadoop-env.sh 添加如下
+      ````
+      export JAVA_HOME=/usr/local/app/jdk1.8.0_231
+      export HDFS_NAMENODE_USER=root
+      export HDFS_DATANODE_USER=root
+      export HDFS_SECONDARYNAMENODE_USER=root
+      ````
+      - 4.2.3 修改 {HADOOP_HOME}/etc/hadoop/hdfs-site.xml 添加如下
+      ````
+      <configuration>
+              <property>
+                      <name>dfs.nameservices</name>
+                      <value>ns</value>
+              </property>
+              <property>
+                      <name>dfs.ha.namenodes.ns</name>
+                      <value>nn1,nn2</value>
+              </property>
+              <property>
+                      <name>dfs.namenode.rpc-address.ns.nn1</name>
+                      <value>qiping:9000</value>
+              </property>
+              <property>
+                      <name>dfs.namenode.http-address.ns.nn1</name>
+                      <value>qiping:9870</value>
+              </property>
+              <property>
+                      <name>dfs.namenode.rpc-address.ns.nn2</name>
+                      <value>lingling:9000</value>
+              </property>
+              <property>
+                      <name>dfs.namenode.http-address.ns.nn2</name>
+                      <value>lingling:9870</value>
+              </property>
+              <property>
+                      <name>dfs.namenode.shared.edits.dir</name>
+                      <value>qjournal://qiping:8485;lingling:8485;huanhuan:8485/ns</value>
+              </property>
+              <property>
+                      <name>dfs.journalnode.edits.dir</name>
+                      <value>/usr/local/app/hadoop-3.2.1/journaldata</value>
+              </property>
+              <property>
+                      <name>dfs.ha.automatic-failover.enabled</name>
+                      <value>true</value>
+              </property>
+              <property>
+                      <name>dfs.client.failover.proxy.provider.ns</name>
+                      <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+              </property>
+              <property>
+                      <name>dfs.ha.fencing.methods</name>
+                      <value>
+                              sshfence
+                              shell(/bin/true)
+                      </value>
+              </property>
+              <property>
+                      <name>dfs.ha.fencing.ssh.private-key-files</name>
+                      <value>/root/.ssh/id_rsa</value>
+              </property>
+              <property>
+                      <name>dfs.ha.fencing.ssh.connect-timeout</name>
+                      <value>30000</value>
+              </property>
+      </configuration>
 
-8. 搭建过程 问题记录
-```
-    8.1 ERROR: [2] bootstrap checks failed
-       * [1]: max file descriptors [4096] for elasticsearch process is too low, increase to at least [65536]
-       * [2]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
-```
-   --切换root用户 修改配置
-   - 8.1.1 su - root
-   - 8.1.2 vi vi /etc/security/limits.conf 添加如下
-```
-        * hard nofile 65536
-        * soft nofile 65536
-```
-   - 8.1.3 vi /etc/sysctl.conf 添加如下
-        vm.max_map_count=655360
-        sysctl -p --生效命令
-   - 参考文献 https://www.cnblogs.com/sloveling/p/elasticsearch.html
+      ````
+      - 4.4 修改 {HADOOP_HOME}/etc/hadoop/mapred-site.xml 添加如下
+      ````
+      <configuration>
+      	<property>
+      		<name>mapreduce.framework.name</name>
+      		<value>yarn</value>
+      	</property>
+      	<property>
+      	  <name>yarn.app.mapreduce.am.env</name>
+      	  <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
+      	</property>
+      	<property>
+      	  <name>mapreduce.map.env</name>
+      	  <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
+      	</property>
+      	<property>
+      	  <name>mapreduce.reduce.env</name>
+      	  <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
+      	</property>
+      </configuration>
+      ````
+    - 4.5 修改 {HADOOP_HOME}/etc/hadoop/yarn-site.xml 添加如下
+    ````
+    <configuration>
+      <property>    
+        <name>yarn.nodemanager.aux-services</name>    
+        <value>mapreduce_shuffle</value>    
+        </property>  
+        <property>
+        <name>yarn.resourcemanager.hostname</name>
+        <value>huanhuan</value>
+          </property>
+    </configuration>
+    ````
+    - 4.6 修改 {HADOOP_HOME}/etc/hadoop/workers 添加如下
+    ````
+    qiping
+    lingling
+    huanhuan
+    ````
+    
+5. 启动
+    - 5.1 启动 journalnode (qiping)
+    ````
+    hdfs --workers --daemon start journalnode
+    ````
+    - 5.2 格式化 HDFS (qiping)
+    ````
+    hdfs namenode -format
+    ````
+    - 5.3 格式化ZKFC (qiping)
+    ````
+    hdfs zkfc -formatZK 
+    ````
+    - 5.4 启动NameNode (qiping lingling)
+    ````
+    hdfs --daemon start namenode
+    ````
+    - 5.5 同步元数据 (lingling)
+    ````
+    hdfs namenode -bootstrapStandby
+    ````
+    - 5.6 启动并验证DataNode (qiping)
+    ````
+    hdfs --workers --daemon start datanode
+    ````
+    - 5.7 启动并验证YARN (huanhuan)
+    ````
+    start-yarn.sh
+    ````
+    - 5.8 启动并验证ZKFC (qiping)
+    ````
+    hdfs --workers --daemon start zkf
+    ````
+    - 5.9 验证
+      - 5.9.1 验证 qiping
+      ````
+      [root@qiping hadoop]# jps
+      3366 DFSZKFailoverController
+      27592 Jps
+      3001 DataNode
+      3145 NodeManager
+      2638 JournalNode
+      2814 NameNode
+      2703 QuorumPeerMain
+      
+      ````
+      - 5.9.2 验证lingling
+      ````
+      2944 DFSZKFailoverController
+      2401 QuorumPeerMain
+      2513 NameNode
+      32485 Jps
+      2327 JournalNode
+      2777 NodeManager
+      2651 DataNode
+      ````
+      - 5.9.3 验证huanhuan
+      ````
+      2272 JournalNode
+      2834 NodeManager
+      2485 DataNode
+      2345 QuorumPeerMain
+      24683 Jps
+      2684 ResourceManager
+      ````
 
-
-```
