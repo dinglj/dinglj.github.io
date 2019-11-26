@@ -93,6 +93,7 @@ tags : [hadoop]
       </configuration>
       ```
       - 4.2.2 修改 {HADOOP_HOME}/etc/hadoop/hadoop-env.sh 添加如下
+      
       ```
       export JAVA_HOME=/usr/local/app/jdk1.8.0_231
       export HDFS_NAMENODE_USER=root
@@ -100,7 +101,8 @@ tags : [hadoop]
       export HDFS_SECONDARYNAMENODE_USER=root
       ````
       - 4.2.3 修改 {HADOOP_HOME}/etc/hadoop/hdfs-site.xml 添加如下
-      {% highlight java %}
+      
+      ```xml
       <configuration>
               <property>
                       <name>dfs.nameservices</name>
@@ -158,9 +160,10 @@ tags : [hadoop]
                       <value>30000</value>
               </property>
       </configuration>
-      {% endhighlight %}
+      ```
       - 4.4 修改 {HADOOP_HOME}/etc/hadoop/mapred-site.xml 添加如下
-      {% highlight java %}
+      
+      ````xml
       <configuration>
       	<property>
       		<name>mapreduce.framework.name</name>
@@ -179,9 +182,10 @@ tags : [hadoop]
       	  <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
       	</property>
       </configuration>
-      {% endhighlight %}
+      ````
     - 4.5 修改 {HADOOP_HOME}/etc/hadoop/yarn-site.xml 添加如下
-    {% highlight java %}
+    
+    ```xml`
     <configuration>
       <property>    
         <name>yarn.nodemanager.aux-services</name>    
@@ -192,7 +196,7 @@ tags : [hadoop]
         <value>huanhuan</value>
           </property>
     </configuration>
-    {% endhighlight %}
+    ````
     - 4.6 修改 {HADOOP_HOME}/etc/hadoop/workers 添加如下
     ````
     qiping
