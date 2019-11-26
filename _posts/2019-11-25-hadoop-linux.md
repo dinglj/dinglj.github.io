@@ -75,7 +75,7 @@ tags : [hadoop]
     - 4.1 下载 hadoop-3.2.1.tar.gz 解压
     - 4.2 修改配置文件
       - 4.2.1 修改 {HADOOP_HOME}/etc/hadoop/core-site.xml 添加如下
-      ```xhtml
+      {% highlight java %}
       <configuration>
       <property>
           <name>hadoop.tmp.dir</name>
@@ -90,7 +90,7 @@ tags : [hadoop]
             <value>qiping:2181,lingling:2181,lingling:2181</value>
       </property>
       </configuration>
-      ```
+      {% endhighlight %}
       - 4.2.2 修改 {HADOOP_HOME}/etc/hadoop/hadoop-env.sh 添加如下
       ````
       export JAVA_HOME=/usr/local/app/jdk1.8.0_231
