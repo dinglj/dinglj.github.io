@@ -75,7 +75,7 @@ tags : [hadoop]
     - 4.1 下载 hadoop-3.2.1.tar.gz 解压
     - 4.2 修改配置文件
       - 4.2.1 修改 {HADOOP_HOME}/etc/hadoop/core-site.xml 添加如下
-      ---
+      ```xml
       <configuration>
       <property>
           <name>hadoop.tmp.dir</name>
@@ -90,16 +90,16 @@ tags : [hadoop]
             <value>qiping:2181,lingling:2181,lingling:2181</value>
       </property>
       </configuration>
-      
+      ```
       - 4.2.2 修改 {HADOOP_HOME}/etc/hadoop/hadoop-env.sh 添加如下
-      ````
+      ```xml
       export JAVA_HOME=/usr/local/app/jdk1.8.0_231
       export HDFS_NAMENODE_USER=root
       export HDFS_DATANODE_USER=root
       export HDFS_SECONDARYNAMENODE_USER=root
-      ````
+      ```
       - 4.2.3 修改 {HADOOP_HOME}/etc/hadoop/hdfs-site.xml 添加如下
-      ````xml
+      ```xml
       <configuration>
               <property>
                       <name>dfs.nameservices</name>
@@ -157,10 +157,9 @@ tags : [hadoop]
                       <value>30000</value>
               </property>
       </configuration>
-
-      ````
+      ```
       - 4.4 修改 {HADOOP_HOME}/etc/hadoop/mapred-site.xml 添加如下
-      ````xml
+      ```xml
       <configuration>
       	<property>
       		<name>mapreduce.framework.name</name>
@@ -179,9 +178,9 @@ tags : [hadoop]
       	  <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
       	</property>
       </configuration>
-      ````
+      ```
     - 4.5 修改 {HADOOP_HOME}/etc/hadoop/yarn-site.xml 添加如下
-    ````xml
+    ```xml
     <configuration>
       <property>    
         <name>yarn.nodemanager.aux-services</name>    
@@ -192,7 +191,7 @@ tags : [hadoop]
         <value>huanhuan</value>
           </property>
     </configuration>
-    ````
+    ```
     - 4.6 修改 {HADOOP_HOME}/etc/hadoop/workers 添加如下
     ````
     qiping
