@@ -75,7 +75,7 @@ tags : [hadoop]
     - 4.1 下载 hadoop-3.2.1.tar.gz 解压
     - 4.2 修改配置文件
       - 4.2.1 修改 {HADOOP_HOME}/etc/hadoop/core-site.xml 添加如下
-      ````
+      ````xml
       <configuration>
       <property>
           <name>hadoop.tmp.dir</name>
@@ -99,7 +99,7 @@ tags : [hadoop]
       export HDFS_SECONDARYNAMENODE_USER=root
       ````
       - 4.2.3 修改 {HADOOP_HOME}/etc/hadoop/hdfs-site.xml 添加如下
-      ````
+      ````xml
       <configuration>
               <property>
                       <name>dfs.nameservices</name>
@@ -160,7 +160,7 @@ tags : [hadoop]
 
       ````
       - 4.4 修改 {HADOOP_HOME}/etc/hadoop/mapred-site.xml 添加如下
-      ````
+      ````xml
       <configuration>
       	<property>
       		<name>mapreduce.framework.name</name>
@@ -181,7 +181,7 @@ tags : [hadoop]
       </configuration>
       ````
     - 4.5 修改 {HADOOP_HOME}/etc/hadoop/yarn-site.xml 添加如下
-    ````
+    ````xml
     <configuration>
       <property>    
         <name>yarn.nodemanager.aux-services</name>    
