@@ -28,8 +28,6 @@ tags : [hadoop]
     
     scp /etc/hosts lingling:/etc/
     scp /etc/hosts huanhuan:/etc/
-    
-    
     ````
     - 1.4 ssh 免密码登录 (各节点)
     ````
@@ -37,7 +35,6 @@ tags : [hadoop]
     ssh-copy-id root@qiping
     ssh-copy-id root@lingling
     ssh-copy-id root@huanhuan
-    
     ````
     
 2. 安装JDK 设置环境变量
