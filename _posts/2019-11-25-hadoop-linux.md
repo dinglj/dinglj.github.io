@@ -4,7 +4,7 @@ title : "hadoop集群搭建"
 category : hadoop
 duoshuo: true
 date : 2019-11-25
-tags : [hadoop]
+tags : [hadoop,大数据]
 ---
 
 ### Hadoop 集群搭建 ###
