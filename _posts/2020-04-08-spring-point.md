@@ -2,7 +2,7 @@
 layout : post
 title : "spring 知识点"
 category : spring
-duoshuo:true
+duoshuo: true
 date : 2020-04-08
 tags : [spring,注解]
 ---
@@ -24,8 +24,8 @@ tags : [spring,注解]
 
 
 ### spring 接口
-1. aware 英译过来:知道的，已感知的，意识到的 实现该接口可以获取ioc容器中bean的id 在bean初始化的时候如下
-    ```
+1. aware 英译过来:知道的，已感知的，意识到的 通俗点解释就是：如果在某个类里面想要使用spring的一些东西，就可以通过实现XXXAware接口告诉spring，spring看到后就会给你送过来，而接收的方式是通过实现接口唯一的方法set-XXX。比如，有一个类想要使用当前的ApplicationContext，那么我们只需要让它实现ApplicationContextAware接口，然后实现接口中唯一的方法void setApplicationContext（ApplicationContextapplicationContext）就可以了
+```
         private void invokeAwareMethods(final String beanName, final Object bean) {
         		if (bean instanceof Aware) {
         			if (bean instanceof BeanNameAware) {
@@ -42,4 +42,55 @@ tags : [spring,注解]
         			}
         		}
         	}
-    ```
+        	
+        private void invokeAwareInterfaces(Object bean) {
+                if (bean instanceof Aware) {
+                    if (bean instanceof EnvironmentAware) {
+                        ((EnvironmentAware) bean).setEnvironment(this.applicationContext.getEnvironment());
+                    }
+                    if (bean instanceof EmbeddedValueResolverAware) {
+                        ((EmbeddedValueResolverAware) bean).setEmbeddedValueResolver(this.embeddedValueResolver);
+                    }
+                    if (bean instanceof ResourceLoaderAware) {
+                        ((ResourceLoaderAware) bean).setResourceLoader(this.applicationContext);
+                    }
+                    if (bean instanceof ApplicationEventPublisherAware) {
+                        ((ApplicationEventPublisherAware) bean).setApplicationEventPublisher(this.applicationContext);
+                    }
+                    if (bean instanceof MessageSourceAware) {
+                        ((MessageSourceAware) bean).setMessageSource(this.applicationContext);
+                    }
+                    if (bean instanceof ApplicationContextAware) {
+                        ((ApplicationContextAware) bean).setApplicationContext(this.applicationContext);
+                    }
+                }
+            }
+```
+2. xxCapable 具有某种xx能力 EnvironmentCapable 具有获取Environment能力
+```
+    public interface EnvironmentCapable {
+    
+        /**
+         * Return the {@link Environment} associated with this component.
+         */
+        Environment getEnvironment();
+    
+    }
+```
+3. BeanWrapper Spring提供的一个用来操作JavaBean属性的工具
+```
+    BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(this);
+    ResourceLoader resourceLoader = new ServletContextResourceLoader(getServletContext());
+    bw.registerCustomEditor(Resource.class, new ResourceEditor(resourceLoader, getEnvironment()));
+    initBeanWrapper(bw);
+    bw.setPropertyValues(pvs, true);
+```
+4. MultiValueMap 一键多值 通常会自己定义 Map<K, List<V>>
+
+
+### spring xml 命名空间解析处理类
+1. mvc命名空间的解析设置在spring-webmvc-4.1.5.RELEASE.jar包下META-INF/spring.handlers文件中
+
+
+
+### spring mvc 流程记录
