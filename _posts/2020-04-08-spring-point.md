@@ -20,6 +20,8 @@ tags : [spring,注解]
 5. @import : 把注解内的bean注入到当前的容器内
 6. @ConditionalOnxx : 当满足xx条件时，才实例化该bean
 7. @Configuration :  注入当前类钟用@Bean的bean
+8. @EnableConfigurationProperties  == @ConfigurationProperties + @Bean (前者自动注入配置类，后者要配置组件注解@Bean/@Compent才能自动注入容器)
+    -- 8.1 @Import({EnableConfigurationPropertiesImportSelector.class})   registrar:登记员
 
 
 
@@ -168,6 +170,13 @@ protected Object resolveName(String name, MethodParameter parameter, NativeWebRe
 
 5. Autowired AutowiredAnnotationBeanPostProcessor 当Spring容器启动时，AutowiredAnnotationBeanPostProcessor 将扫描 Spring 容器中所有 Bean，当发现 Bean 中拥有@Autowired 注释时就找到和其匹配（默认按类型匹配）的 Bean，并注入到对应的地方中去。  
 
+
+
+
+### 异步请求
+1. AsyncWebRequest WebAsyncManager WebAsyncUtils Callable、WebAsyncTask、DeferredResult和Listenable-Future
+
+
 ## todo-list
 1. spring 获取 某个interface的所有实例 例子
 ```
@@ -184,6 +193,7 @@ Map<String, HandlerMapping> matchingBeans = BeanFactoryUtils.beansOfTypeIncludin
           如果 element 是类类型，那么会依次查找该类及其父类，看有没有注解。
 3. mvc 参数解析处理器
 4. 不同url对应不同的resource,不同的resource使用不同handler来读取
+5. PostProcessor 后处理器
 
 ## jdk
 1. AnnotatedElement 接口是所有程序元素（如Class、Method、Constructor等）的父接口 可以用该接口做注解操作
@@ -203,3 +213,23 @@ public interface MethodFilter {
 
 ```
 
+## 自定义开发key 集成sharding-jdbc
+```
+//bsf sharding-jdbc starter
+@Configuration
+//@AutoConfigureAfter(SpringBootConfiguration.class)
+@EnableConfigurationProperties({ShardingJdbcProperties.class,SpringBootShardingRuleConfigurationProperties.class, SpringBootMasterSlaveRuleConfigurationProperties.class, SpringBootEncryptRuleConfigurationProperties.class, SpringBootPropertiesConfigurationProperties.class})
+@ConditionalOnProperty(name = "bsf.shardingjdbc.enabled", havingValue = "true")
+public class ShardingJdbcConfiguration extends SpringBootConfiguration implements ApplicationContextAware {
+
+
+//sharding-jdbc spring starter
+@Configuration
+@EnableConfigurationProperties({
+        SpringBootShardingRuleConfigurationProperties.class, 
+        SpringBootMasterSlaveRuleConfigurationProperties.class, SpringBootEncryptRuleConfigurationProperties.class, SpringBootPropertiesConfigurationProperties.class})
+@ConditionalOnProperty(prefix = "spring.shardingsphere", name = "enabled", havingValue = "true", matchIfMissing = true)
+@RequiredArgsConstructor
+public class SpringBootConfiguration implements EnvironmentAware {
+
+```
