@@ -45,7 +45,6 @@ CREATE TABLE csx_b2b_finance.voucher_header_2211 LIKE csx_b2b_finance.voucher_he
 
 
 1. 分库分表配置
-
 ```
 spring.shardingsphere.sharding.tables.voucher_header.actual-data-nodes=ds0.voucher_header_$->{['1933','2115','2116','2121','2126','2127','2128','2129','2130','2207','2210','2211','2304','2408','2814','2815','3505','3750','3751']}
 spring.shardingsphere.sharding.tables.voucher_header.table-strategy.standard.sharding-column=comp_code
