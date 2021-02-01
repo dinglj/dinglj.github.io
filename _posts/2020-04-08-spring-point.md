@@ -232,3 +232,26 @@ public class ShardingJdbcConfiguration extends SpringBootConfiguration implement
 public class SpringBootConfiguration implements EnvironmentAware {
 
 ```
+
+
+
+## spring中反射的应用
+1. PropertyValue
+
+
+## spring 动态获取bean属性
+```
+    @Override
+	protected BeanWrapperImpl createAccessor(Object target) {
+		return new BeanWrapperImpl(target);
+	}
+	@Test
+    public void setterDoesNotCallGetter() {
+        GetterBean target = new GetterBean();
+        BeanWrapper accessor = createAccessor(target);
+        accessor.setPropertyValue("name", "tom");
+        assertThat(target.getAliasedName()).isEqualTo("tom");
+        assertThat(accessor.getPropertyValue("aliasedName")).isEqualTo("tom");
+    }
+	
+```

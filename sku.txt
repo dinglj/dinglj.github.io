@@ -1,0 +1,85 @@
+商品最为核心的就是如何确定某一个商品的规格的价格和此规格的库存，所以合理设计sku是商品模块的重点
+首先百度中的sku的定义
+
+1
+SKU=Stock Keeping Unit（库存量单位）。即库存进出计量的基本单元，可以是以件，盒，托盘等为单位。SKU这是对于大型连锁超市DC（配送中心）物流管理的一个必要的方法。现在已经被引申为产品统一编号的简称，每种产品均对应有唯一的SKU号。单品：对一种商品而言，当其品牌、型号、配置、等级、花色、包装容量、单位、生产日期、保质期、用途、价格、产地等属性中任一属性与其他商品存在不同时，可称为一个单品。
+1.商品表 eb_goods
+之后所有表省略 is_delete,create_at,create_id,update_at,update_id
+以及隐藏所有非关键的字段
+字段	类型	说明
+goods_id	varchar(32)	商品主键
+goods_name	varchar	商品名称
+goods_desc	text	产品描述
+is_delete	int	是否 1:删除,0:可用
+create_at	timestamp	创建时间
+create_id	varchar	创建人id
+update_at	timestamp	更新时间
+update_id	varchar	更新人id
+2.商品sku表 eb_goods_sku
+字段	类型	说明
+sku_id	varchar(32)	sku主键
+goods_id	varchar(32)	产品主键
+stocks	int(11)	数量
+price	bigint(20)	价格
+origin_price	bigint(20)	原价
+sku_name	varchar(45)	sku名称
+sku_code	varchar(45)	商品编码（第三方的）
+sku_status	int(11)	启用 1 未启用0
+img_url	varchar(1000)	sku的图片
+is_default	int(11)	是否是默认sku
+sale_num	bigint(20)	销量
+3.商品sku值表 eb_goods_sku_value
+字段	类型	说明
+sku_value_id	varchar(32)	sku值主键
+sku_id	varchar(32)	商品sku主键
+property_id	varchar(32)	类属性主键
+property_name	varchar(45)	属性名
+property_value_id	varchar(32)	类属性值主键
+property_value_name	varchar(1000)	有可能是多个认证时 map转成json存储
+sku_value	varchar(45)	具体值
+5.商品媒体表 eb_goods_media
+字段	类型	说明
+goods_media_id	varchar(32)	媒体主键
+goods_id	varchar(32)	商品主键
+type	int(11)	媒体类型 1图片，2视频
+position	int(11)	显示的具体位置 0 主图 ，1轮播图，2内容图
+img_url	varchar(1000)	图片地址
+idx	int(11)	排序字段 默认0
+status	int(11)	1 显示 0 不显示 视频上传后可能不想要显示时 0
+video_url	varchar(100)	视频路径
+6.商品属性表 eb_goods_property
+字段	类型	说明
+goods_property_id	varchar(32)	商品属性主键
+goods_id	varchar(32)	商品主键
+property_id	varchar(32)	类属性主键
+property_name	varchar(45)	属性名
+property_value_id	varchar(32)	类属性值id
+property_value_name	varchar(1000)	有可能是多个认证时 map转成json存储
+8.属性表 eb_property
+字段	类型	说明
+property_id	varchar(32)	产品分类属性主键
+name	varchar(45)	属性名称
+property_desc	varchar(100)	属性描述
+type	int(11)	属性类型 type=0:不用选择,1:输入框,2:单选,3:多选,4:下拉文本,5:上传文件,6:时间,7:产地,8:包装单位
+type_value	varchar(20)	类型值,属性类型 type=1:输入框{10:常规,11:整数,12:小数},6:时间{60:不影响下架,61:影响下架}
+9.属性值表 eb_property_value
+字段	类型	说明
+property_value_id	varchar(32)	类目属性值主键
+property_id	varchar(32)	属性主键
+value_name	varchar(255)	属性值名称 有可能是图片路径
+idx	int(11)	排序
+13.分类表 eb_species
+字段	类型	说明
+species_id	varchar(32)	分类主键
+name	varchar(45)	分类名称
+parent_id	varchar(32)	父id
+species_desc	varchar(100)	分类描述
+14.分类属性表 eb_species_property
+字段	类型	说明
+species_property_id	varchar(32)	产品分类属性主键
+species_id	varchar(32)	分类主键
+property_id	varchar(32)	属性主键
+property_desc	varchar(100)	属性描述
+is_sale	int(11)	是否销售属性 1是
+is_must	int(11)	是否必选 1是
+is_can_new	int(11)	上架是否可以手动新建值

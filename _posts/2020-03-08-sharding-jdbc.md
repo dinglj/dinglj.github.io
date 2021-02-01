@@ -253,4 +253,11 @@ public String getDataSource(final String name, final String masterDataSourceName
 ## 分库分表
 
 
-## 读写分离 + 分库分表
+## 精准分片 + 读写分离
+```
+spring.shardingsphere.sharding.tables.test.actual-data-nodes=$->{['ds0']}.test_20190$->{4..6}
+spring.shardingsphere.sharding.tables.test.table-strategy.standard.sharding-column=stat_date
+spring.shardingsphere.sharding.tables.test.table-strategy.standard.precise-algorithm-class-name=com.nullyb.springbootshardingjdbc.algorithm.TableShardingAlgorithm
+spring.shardingsphere.sharding.master-slave-rules.ds0.master-data-source-name=ngbmp
+spring.shardingsphere.sharding.master-slave-rules.ds0.slave-data-source-names=ngbmpbj, ngbmptj, ngbmpnm
+```
